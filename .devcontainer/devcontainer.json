@@ -1,0 +1,26 @@
+{
+    "name": "Mini weather station Project",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "runArgs": [
+        // Map the ESP32's USB port into the container
+        "--device=/dev/ttyUSB0",
+        // Grant privileges needed for hardware access
+        "--privileged"
+    ],
+    "customizations": {
+        "vscode": {
+            // Install the PIO extension inside the container
+            "extensions": [
+                "platformio.platformio-ide",
+                "ms-vscode.cmake-tools",
+                "ms-python.python" 
+            ]
+        }
+    },
+    // Fixes "Permission Denied" by adding the container user to the 'dialout' group
+    "postCreateCommand": "sudo usermod -a -G dialout vscode",
+    // Connect as the non-root 'vscode' user
+    "remoteUser": "vscode"
+}
