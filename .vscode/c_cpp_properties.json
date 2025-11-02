@@ -165,6 +165,7 @@
                 "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
                 "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
+                "/workspaces/mod7/.pio/libdeps/freenove_wroom/Unity/src",
                 "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/HTTPUpdateServer/src",
                 ""
             ],
@@ -328,6 +329,7 @@
                     "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                     "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
                     "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
+                    "/workspaces/mod7/.pio/libdeps/freenove_wroom/Unity/src",
                     "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/HTTPUpdateServer/src",
                     ""
                 ]
