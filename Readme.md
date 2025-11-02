@@ -1,4 +1,4 @@
-# Mini Weather Station (mod7)
+# Mini Weather Station ()
 
 This module runs on an ESP32 and reads three sensors:
 - Light sensor (ADC on GPIO36)
