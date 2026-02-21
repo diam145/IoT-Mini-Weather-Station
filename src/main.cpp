@@ -3,6 +3,11 @@
 #include <PubSubClient.h>
 #include <DHT.h>
 #include "wifimqtt.h"
+#include "display.h"
+
+//extern JsonDocument openweathermapDoc;
+
+//extern einkDataTemplate einkData;
 
 
 #define LIGHT_SENSOR_PIN 36 // GIOP36 (ADC0)
@@ -52,6 +57,15 @@ void setup() {
     connectAP();
     client.setServer(mqtt_server, 1883);
     client.setCallback(callback);
+
+
+    // Display setup
+    lcd.initR();      // Init ST7735S chip, black tab
+    lcd.enableDisplay(true);        // Enable display
+    lcd.setRotation(1);
+    // Hello world
+    //helloWorld();
+    //delay(3000);
 }
 
 void loop() {
@@ -126,6 +140,23 @@ void loop() {
         // SendSensorsDataViaMQTT
         sendSensorsDataViaMQTT(analogValue, thermistorTemperature, humi, tempC, tempF);
     }
+
+
+    // display update
+    // lcd.fillScreen(ST7735_BLUE);
+    // delay(3000);
+    // lcd.fillScreen(ST7735_RED);
+    // delay(3000);
+
+
+    // showDisplayIcons();
+    // if (einkData.show) {
+    // Serial.println("Displaying e-ink data:");
+    // Serial.println(einkData.temperature);
+    // displayOpenWeathermap(einkData);
+    // }
+    // displayOpenWeathermap();
+    // delay(3000);
 
     delay(3000);
 }

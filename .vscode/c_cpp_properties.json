@@ -10,6 +10,10 @@
             "includePath": [
                 "/workspaces/mod7/include",
                 "/workspaces/mod7/src",
+                "/workspaces/mod7/.pio/libdeps/freenove_wroom/GxEPD2/src",
+                "/workspaces/mod7/.pio/libdeps/freenove_wroom/Adafruit ST7735 and ST7789 Library",
+                "/workspaces/mod7/.pio/libdeps/freenove_wroom/Adafruit GFX Library",
+                "/workspaces/mod7/.pio/libdeps/freenove_wroom/Adafruit BusIO",
                 "/workspaces/mod7/.pio/libdeps/freenove_wroom/DHT sensor library",
                 "/workspaces/mod7/.pio/libdeps/freenove_wroom/Adafruit Unified Sensor",
                 "/workspaces/mod7/.pio/libdeps/freenove_wroom/PubSubClient/src",
@@ -165,6 +169,7 @@
                 "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
                 "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
+                "/workspaces/mod7/.pio/libdeps/freenove_wroom/Adafruit seesaw Library",
                 "/workspaces/mod7/.pio/libdeps/freenove_wroom/Unity/src",
                 "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/HTTPUpdateServer/src",
                 ""
@@ -174,6 +179,10 @@
                 "path": [
                     "/workspaces/mod7/include",
                     "/workspaces/mod7/src",
+                    "/workspaces/mod7/.pio/libdeps/freenove_wroom/GxEPD2/src",
+                    "/workspaces/mod7/.pio/libdeps/freenove_wroom/Adafruit ST7735 and ST7789 Library",
+                    "/workspaces/mod7/.pio/libdeps/freenove_wroom/Adafruit GFX Library",
+                    "/workspaces/mod7/.pio/libdeps/freenove_wroom/Adafruit BusIO",
                     "/workspaces/mod7/.pio/libdeps/freenove_wroom/DHT sensor library",
                     "/workspaces/mod7/.pio/libdeps/freenove_wroom/Adafruit Unified Sensor",
                     "/workspaces/mod7/.pio/libdeps/freenove_wroom/PubSubClient/src",
@@ -329,6 +338,7 @@
                     "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                     "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
                     "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
+                    "/workspaces/mod7/.pio/libdeps/freenove_wroom/Adafruit seesaw Library",
                     "/workspaces/mod7/.pio/libdeps/freenove_wroom/Unity/src",
                     "/home/vscode/.platformio/packages/framework-arduinoespressif32/libraries/HTTPUpdateServer/src",
                     ""
@@ -339,7 +349,7 @@
                 "ESP_PLATFORM",
                 "IDF_VER=\"4.4.7\"",
                 "_GNU_SOURCE",
-                "PLATFORMIO=60118",
+                "PLATFORMIO=60119",
                 "ARDUINO_ESP32_DEV",
                 "CONFIG_BLINK_GPIO=16",
                 "HAVE_CONFIG_H",
