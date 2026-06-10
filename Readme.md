@@ -1,71 +1,144 @@
-# Mini Weather Station
+# IoT Mini Weather Station
 
-This module runs on an ESP32 and reads three sensors:
-- Light sensor (ADC on GPIO36)
-- DHT11 (GPIO26) for temperature and humidity
-- NTC thermistor (ADC on GPIO34)
+An ESP32-based mini weather station that reads environmental data from multiple sensors and publishes it to an MQTT broker in real time. It also displays live readings on an LCD screen. Built with PlatformIO and the Arduino framework.
 
-Sensor readings are published as JSON over MQTT to topic `sensors/data/weatherStation`. A Node-RED flow subscribes to that topic, optionally transforms and enriches the data, and writes the measurements in real time to InfluxDB. Grafana reads from InfluxDB and provides dashboards with multiple visualizations (time series, gauges, single-stat panels, thresholds and aggregated views).
+---
 
-## Data format
-Published JSON contains some fields like:
-- `light` — raw ADC value (0–4095)
-- `thermistorTemp` — thermistor temperature in °C (computed using beta approximation)
-- `humidity` — DHT11 relative humidity (%)
-- `tempC` — DHT11 temperature in °C
-- `tempF` — DHT11 temperature in °F
+## Overview
 
-Example payload:
+This project turns an ESP32 into a self-contained weather station that:
+
+1. Reads temperature and humidity from a **DHT11** sensor
+2. Measures ambient light level from a **photoresistor** (GPIO36)
+3. Reads temperature from a **thermistor** using the Steinhart-Hart equation
+4. Displays all readings on an **LCD display**
+5. Publishes a JSON payload to the MQTT topic `sensors/data/weatherStation` every loop cycle
+
+---
+
+## Features
+
+- Multi-sensor data acquisition (DHT11, light sensor, thermistor)
+- Light intensity classification (Dark, Dim, Bright, Very Bright)
+- Temperature in both Celsius and Fahrenheit
+- Real-time display on an LCD screen
+- MQTT publish over Wi-Fi with auto-reconnect
+- JSON payload serialization with ArduinoJson
+- Credentials stored separately in `credentials.h`
+
+---
+
+## Hardware
+
+| Component | Pin |
+|---|---|
+| DHT11 (Temp + Humidity) | GPIO26 |
+| Photoresistor (Light) | GPIO36 (ADC0) |
+| Thermistor (10kΩ + Beta 3950) | GPIO34 (ADC) |
+| LCD Display | I2C / SPI (via `display.h`) |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Microcontroller | ESP32 |
+| Framework | Arduino (via PlatformIO) |
+| Build system | PlatformIO + CMake + ESP-IDF |
+| Connectivity | Wi-Fi + MQTT (port 1883) |
+| MQTT Library | PubSubClient |
+| Serialization | ArduinoJson |
+| Sensor Library | DHT sensor library |
+| Language | C / C++ |
+
+---
+
+## Project Structure
+
+```
+IoT-Mini-Weather-Station/
+├── src/
+│   ├── main.cpp           # Core logic: sensor reads, MQTT publish, display
+│   ├── wifimqtt.h         # Wi-Fi + MQTT connection, reconnect, callback
+│   ├── display.h          # LCD display initialization and rendering
+│   └── credentials.h      # Wi-Fi SSID/password (not committed)
+├── include/               # Additional headers
+├── lib/                   # External libraries
+├── test/                  # Unit tests
+├── platformio.ini         # PlatformIO project configuration
+├── sdkconfig.defaults     # ESP-IDF default config
+└── CMakeLists.txt
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [PlatformIO](https://platformio.org/) (VS Code extension or CLI)
+- ESP32 development board
+- DHT11 sensor, photoresistor, thermistor (10kΩ), LCD display
+- A running MQTT broker (e.g., [Mosquitto](https://mosquitto.org/))
+
+### Setup
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/diam145/IoT-Mini-Weather-Station.git
+cd IoT-Mini-Weather-Station
+```
+
+2. Fill in your credentials in `src/credentials.h`:
+
+```cpp
+#define WIFI_SSID     "your_wifi_ssid"
+#define WIFI_PASSWORD "your_wifi_password"
+```
+
+3. Update the MQTT broker address in `src/wifimqtt.h`:
+
+```cpp
+const char *mqtt_server = "your_broker_ip";
+```
+
+4. Wire up the components according to the pin table above.
+
+5. Build and flash:
+
+```bash
+pio run --target upload
+```
+
+---
+
+## MQTT Output
+
+**Topic:** `sensors/data/weatherStation`
+
+**Example Payload:**
+
 ```json
 {
-  "light": 1200,
-  "thermistorTemp": 22.4,
-  "humidity": 45.2,
-  "tempC": 22.7,
-  "tempF": 72.9
+  "temperature_c": 22.5,
+  "temperature_f": 72.5,
+  "humidity": 48,
+  "light": 620,
+  "light_label": "Bright",
+  "thermistor_temp_c": 21.8
 }
 ```
 
-## Thermistor calculation
-Thermistor temperature is computed using the beta approximation:
-$$
-T(°C) = \frac{1}{\dfrac{1}{T_0} + \dfrac{1}{\beta}\ln\left(\dfrac{R}{R_0}\right)} - 273.15
-$$
-where $T_0$ is 298.15 K (25 °C), $R_0$ is the nominal resistance (10 kΩ), $R$ is the measured resistance, and $\beta$ is the thermistor beta value (3950 in this project).
+---
 
-## Node-RED, InfluxDB and Grafana (operational notes)
-- Node-RED:
-  - Subscribe to MQTT topic `sensors/data/weatherStation`.
-  - Use a JSON node (or function node) to parse and map fields to InfluxDB measurement and tags.
-  - Write points to InfluxDB with a retention policy appropriate for your use case.
-- InfluxDB:
-  - Store each sensor as fields on a measurement (e.g., `weather_station`).
-  - Use tags for device id/location if multiple devices report.
-- Grafana:
-  - Connect Grafana to InfluxDB.
-  - Build panels:
-    - Time-series for temp/humidity/light
-    - Gauge or stat for current temperature and humidity
-    - Thresholds/alerts for out-of-range values
-    - Aggregation panels (min/max/avg over interval)
+## Author
 
-## Configuration and where to look in this repo
-- Wi‑Fi credentials: [`src/credentials.h`](src/credentials.h) (this file is ignored by git)
-- MQTT client and broker config: see [`src/wifimqtt.h`](src/wifimqtt.h)
-  - Contains functions: [`connectAP`](src/wifimqtt.h), [`reconnect`](src/wifimqtt.h), [`callback`](src/wifimqtt.h)
-- JSON payload and publishing: see [`src/main.cpp`](src/main.cpp) — function [`sendSensorsDataViaMQTT`](src/main.cpp)
-- Build & environment: [`platformio.ini`](platformio.ini)
-- Dev container config (optional): [`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json)
+**[@diam145](https://github.com/diam145)**
 
-## Getting started
-1. Set your Wi‑Fi SSID and password in [`src/credentials.h`](src/credentials.h).
-2. Configure the MQTT broker settings in [`src/wifimqtt.h`](src/wifimqtt.h).
-3. Build and upload with PlatformIO:
-   - See [`platformio.ini`](platformio.ini)
-4. Ensure Node-RED subscribes to `sensors/data/weatherStation` and writes to InfluxDB.
-5. Open Grafana and create dashboards querying the InfluxDB measurement.
+---
 
-## Notes
-- Credentials are stored in `src/credentials.h` and intentionally omitted from source control via `.gitignore`.
-- Topic used by device: `sensors/data/weatherStation`.
-- If you change pin assignments or thermistor constants, update the relevant constants in [`src/main.cpp`](src/main.cpp).
+## License
+
+This project does not currently have a license. All rights reserved by the author.
